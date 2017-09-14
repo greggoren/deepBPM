@@ -1,0 +1,1 @@
+XorLoop(Seq(Xor(tau, XorLoop(Vitals, tau, tau)), Xor(tau, Exam, Arrival), And(Xor(tau, XorLoop(BloodDraw, tau, tau)), Xor(tau, XorLoop(Infusion, tau, tau)), Xor(tau, XorLoop(Pharmacy, tau, tau)))), tau, tau)
