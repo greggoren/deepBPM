@@ -38,6 +38,9 @@ def cond_dropout(incoming, keep_prob, noise_shape=None, name="Dropout"):
         (2014), Journal of Machine Learning Research, 5(Jun)(2), 1929-1958.
 
     Links:
+      [https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf]
+        (https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf)
+
     """
 
     with tf.name_scope(name) as scope:
@@ -129,17 +132,20 @@ df['Activity_Time'] = df['Complete Timestamp'] - df['Start Timestamp']
 df['Activity_Time'] = df['Activity_Time'].astype('timedelta64[h]')
 df['Start Timestamp'] = df['Start Timestamp'].values.view('<i8')/10**9
 df['Previous_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(1).fillna(11.0).apply(np.array)
-df['Previous'] = df.groupby('Case ID')['Activity'].shift(1).fillna("None").apply(np.array)
-df['Xor'] = 0
-df['Xor'][(df['Activity']=='Vitals') & (df['Previous']=='Vitals')] = 1
-df['Xor'][(df['Activity']=='BloodDraw') & (df['Previous']=='BloodDraw')] = 1
-df['Xor'][(df['Activity']=='Infusion') & (df['Previous']=='Infusion')] = 1
-df['Xor'][(df['Activity']=='Pharmacy') & (df['Previous']=='Pharmacy')] = 1
-df['Xor'][(df['Activity']=='Exam') & (df['Previous']=='Arrival')] = 1
-#df['Elapsed_Time'] =
-print(df)
+df['Elapsed_Time'] = None
+df['Number_of_previous_activities'] = None
+elapsed = {}
+numbers = {}
+for i,row in df.iterrows():
+    if not elapsed.get(row['Case ID'],False):
+        elapsed[row['Case ID']]=0
+        numbers[row['Case ID']] = 0
+    elapsed[row['Case ID']]+=row['Activity_Time']
+    numbers[row['Case ID']]=numbers[row['Case ID']]+1
+    df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
+    df.set_value(i,'Number_of_previous_activities',numbers[row['Case ID']])
 Case_IDs = pd.DataFrame({'count': df.groupby(['Case ID']).size()}).reset_index()
-
+print(df)
 df_y = df[['Case ID', 'Activity_Index', 'Start Timestamp']]
 df_y['Activity_Index'] = df_y.groupby('Case ID')['Activity_Index'].shift(-1).fillna(7.0).apply(np.array)
 df_y = df_y.sort_values(['Case ID','Start Timestamp']).drop(['Start Timestamp'], axis=1).groupby('Case ID').apply(np.array)
