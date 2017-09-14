@@ -132,6 +132,13 @@ df['Activity_Time'] = df['Complete Timestamp'] - df['Start Timestamp']
 df['Activity_Time'] = df['Activity_Time'].astype('timedelta64[h]')
 df['Start Timestamp'] = df['Start Timestamp'].values.view('<i8')/10**9
 df['Previous_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(1).fillna(11.0).apply(np.array)
+df['Previous'] = df.groupby('Case ID')['Activity'].shift(1).fillna("None").apply(np.array)
+df['Xor'] = 0
+df['Xor'][(df['Activity']=='Vitals') & (df['Previous']=='Vitals')] = 1
+df['Xor'][(df['Activity']=='BloodDraw') & (df['Previous']=='BloodDraw')] = 1
+df['Xor'][(df['Activity']=='Infusion') & (df['Previous']=='Infusion')] = 1
+df['Xor'][(df['Activity']=='Pharmacy') & (df['Previous']=='Pharmacy')] = 1
+df['Xor'][(df['Activity']=='Exam') & (df['Previous']=='Arrival')] = 1
 #df['Elapsed_Time'] =
 print(df)
 Case_IDs = pd.DataFrame({'count': df.groupby(['Case ID']).size()}).reset_index()
