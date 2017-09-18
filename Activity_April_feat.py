@@ -132,16 +132,17 @@ df['Activity_Time'] = df['Complete Timestamp'] - df['Start Timestamp']
 df['Activity_Time'] = df['Activity_Time'].astype('timedelta64[h]')
 df['Start Timestamp'] = df['Start Timestamp'].values.view('<i8')/10**9
 df['Previous_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(1).fillna(11.0).apply(np.array)
-df['Elapsed_Time'] = None
-df['Number_of_previous_activities'] = None
-elapsed = {}
-numbers = {}
-for i,row in df.iterrows():
-    if not elapsed.get(row['Case ID'],False):
-        elapsed[row['Case ID']]=0
-    elapsed[row['Case ID']]+=row['Activity_Time']
-    df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
-    #df.set_value(i,'Number_of_previous_activities',numbers[row['Case ID']])
+df['trigram_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(2).fillna(11.0).apply(np.array)
+# df['Elapsed_Time'] = None
+# df['Number_of_previous_activities'] = None
+# elapsed = {}
+# numbers = {}
+# for i,row in df.iterrows():
+#     if not elapsed.get(row['Case ID'],False):
+#         elapsed[row['Case ID']]=0
+#     elapsed[row['Case ID']]+=row['Activity_Time']
+#     df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
+#     #df.set_value(i,'Number_of_previous_activities',numbers[row['Case ID']])
 Case_IDs = pd.DataFrame({'count': df.groupby(['Case ID']).size()}).reset_index()
 print(df)
 df_y = df[['Case ID', 'Activity_Index', 'Start Timestamp']]
