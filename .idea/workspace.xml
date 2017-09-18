@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="03c4b511-11c0-4ca7-89b1-8881c5ef9a32" name="Default" comment="features test">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/deepBPM.iml" afterPath="$PROJECT_DIR$/.idea/deepBPM.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" id="03c4b511-11c0-4ca7-89b1-8881c5ef9a32" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Activity_April_feat.py" afterPath="$PROJECT_DIR$/Activity_April_feat.py" />
     </list>
@@ -43,8 +41,8 @@
       <file leaf-file-name="Activity_April_feat.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Activity_April_feat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="148" column="75" selection-start-line="148" selection-start-column="75" selection-end-line="148" selection-end-column="75" />
+            <state relative-caret-position="3706">
+              <caret line="218" column="83" selection-start-line="218" selection-start-column="83" selection-end-line="218" selection-end-column="83" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -75,6 +73,11 @@
     </leaf>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="shraga89" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="PUSH_TAGS">
       <GitPushTagMode />
@@ -347,7 +350,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505389828432</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="new tree features">
+      <created>1505731122140</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1505731122140</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -387,7 +397,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="features test" />
-    <option name="LAST_COMMIT_MESSAGE" value="features test" />
+    <MESSAGE value="new tree features" />
+    <option name="LAST_COMMIT_MESSAGE" value="new tree features" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -579,8 +590,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Activity_April_feat.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="148" column="75" selection-start-line="148" selection-start-column="75" selection-end-line="148" selection-end-column="75" />
+        <state relative-caret-position="3706">
+          <caret line="218" column="83" selection-start-line="218" selection-start-column="83" selection-end-line="218" selection-end-column="83" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>

@@ -147,15 +147,15 @@ df.loc[(df['Activity']=='Infusion') & (df['Previous']=='Pharmacy'), ['And']] = 1
 df.loc[(df['Activity']=='Pharmacy') & (df['Previous']=='Infusion'), ['And']] = 1
 df.loc[(df['Activity']=='Exam') & (df['Previous']=='Arrival'), ['And']] = 1
 df.loc[(df['Activity']=='Arrival') & (df['Previous']=='Exam'), ['And']] = 1
-# df['Elapsed_Time'] = None
-# df['Number_of_previous_activities'] = None
-# elapsed = {}
-# numbers = {}
-# for i,row in df.iterrows():
-#     if not elapsed.get(row['Case ID'],False):
-#         elapsed[row['Case ID']]=0
-#     elapsed[row['Case ID']]+=row['Activity_Time']
-#     df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
+df['Elapsed_Time'] = None
+df['Number_of_previous_activities'] = None
+elapsed = {}
+numbers = {}
+for i,row in df.iterrows():
+    if not elapsed.get(row['Case ID'],False):
+        elapsed[row['Case ID']]=0
+    elapsed[row['Case ID']]+=row['Activity_Time']
+    df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
 #     #df.set_value(i,'Number_of_previous_activities',numbers[row['Case ID']])
 Case_IDs = pd.DataFrame({'count': df.groupby(['Case ID']).size()}).reset_index()
 print(df)
@@ -209,9 +209,15 @@ df_y = np.reshape(df_y, (-1, max_len))
 #     df_new += [temp, ]
 # df = np.array(list(df_new), dtype=np.float32)
 
-df = df.join(pd.get_dummies(df['Activity'])).join(pd.get_dummies(df['Activity_Time']))
+df = df.join(pd.get_dummies(df['Activity'], prefix='Activity'))\
+    .join(pd.get_dummies(df['Activity_Time'], prefix='Activity_Time'))\
+    .join(pd.get_dummies(df['Previous_Activity'], prefix='Previous_Activity'))\
+    .join(pd.get_dummies(df['trigram_Activity'], prefix='trigram_Activity'))\
+    .join(pd.get_dummies(df['Elapsed_Time'], prefix='Elapsed_Time'))
+
 df['Padding_Activity'] = 0
-df = df.drop(['Activity', 'Complete Timestamp', 'Variant index', 'Activity_Index', 'Activity_Time'], axis=1)
+df = df.drop(['Activity', 'Complete Timestamp', 'Variant index', 'Activity_Index', \
+              'Activity_Time', 'Previous_Activity','Previous', 'trigram_Activity', 'Elapsed_Time'], axis = 1)
 pad_size = len(df.columns)
 df = df.sort_values(['Case ID', 'Start Timestamp']).groupby('Case ID').apply(np.array)
 pad_seq = [0.0] * (pad_size - 2) + [1.0]
