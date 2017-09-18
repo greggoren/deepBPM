@@ -133,6 +133,20 @@ df['Activity_Time'] = df['Activity_Time'].astype('timedelta64[h]')
 df['Start Timestamp'] = df['Start Timestamp'].values.view('<i8')/10**9
 df['Previous_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(1).fillna(11.0).apply(np.array)
 df['trigram_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(2).fillna(11.0).apply(np.array)
+df['Previous'] = df.groupby('Case ID')['Activity'].shift(1).fillna("None").apply(np.array)
+df['XorLoop'] = 0
+df['Xor'] = 0
+df['And'] = 0
+df['Seq'] = 0
+df.loc[(df['Activity']=='Exam') & (df['Previous']=='Vitals'), ['Seq']] = 1
+df.loc[df['Activity']=='Pharmacy', ['XorLoop']] = 1
+df.loc[df['Activity']=='Exam', ['XorLoop']] = 1
+df.loc[df['Activity']=='BloodDraw', ['XorLoop']] = 1
+df.loc[(df['Activity']=='BloodDraw') & (df['Previous']=='Arrival'), ['Seq']] = 1
+df.loc[(df['Activity']=='Infusion') & (df['Previous']=='Pharmacy'), ['And']] = 1
+df.loc[(df['Activity']=='Pharmacy') & (df['Previous']=='Infusion'), ['And']] = 1
+df.loc[(df['Activity']=='Exam') & (df['Previous']=='Arrival'), ['And']] = 1
+df.loc[(df['Activity']=='Arrival') & (df['Previous']=='Exam'), ['And']] = 1
 # df['Elapsed_Time'] = None
 # df['Number_of_previous_activities'] = None
 # elapsed = {}
