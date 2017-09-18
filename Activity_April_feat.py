@@ -154,6 +154,8 @@ numbers = {}
 for i,row in df.iterrows():
     if not elapsed.get(row['Case ID'],False):
         elapsed[row['Case ID']]=0
+        numbers[row['Case ID']]=0
+
     elapsed[row['Case ID']]+=row['Activity_Time']
     df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
     df.set_value(i,'Number_of_previous_activities',numbers[row['Case ID']])
