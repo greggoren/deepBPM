@@ -216,11 +216,11 @@ df = df.join(pd.get_dummies(df['Activity'], prefix='Activity'))\
     .join(pd.get_dummies(df['Activity_Time'], prefix='Activity_Time'))\
     .join(pd.get_dummies(df['Previous_Activity'], prefix='Previous_Activity'))\
     .join(pd.get_dummies(df['trigram_Activity'], prefix='trigram_Activity'))\
-    .join(pd.get_dummies(df['Elapsed_Time'], prefix='Elapsed_Time'))
+    .join(pd.get_dummies(df['Number_of_previous_activities'], prefix='Number_of_previous_activities'))
 
 df['Padding_Activity'] = 0
 df = df.drop(['Activity', 'Complete Timestamp', 'Variant index', 'Activity_Index', \
-              'Activity_Time', 'Previous_Activity','Previous', 'trigram_Activity', 'Elapsed_Time'], axis = 1)
+              'Activity_Time', 'Previous_Activity','Previous', 'trigram_Activity','Number_of_previous_activities'], axis = 1)
 pad_size = len(df.columns)
 df = df.sort_values(['Case ID', 'Start Timestamp']).groupby('Case ID').apply(np.array)
 pad_seq = [0.0] * (pad_size - 2) + [1.0]
