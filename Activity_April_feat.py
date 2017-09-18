@@ -156,7 +156,7 @@ for i,row in df.iterrows():
         elapsed[row['Case ID']]=0
     elapsed[row['Case ID']]+=row['Activity_Time']
     df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
-#     #df.set_value(i,'Number_of_previous_activities',numbers[row['Case ID']])
+    df.set_value(i,'Number_of_previous_activities',numbers[row['Case ID']])
 Case_IDs = pd.DataFrame({'count': df.groupby(['Case ID']).size()}).reset_index()
 print(df)
 df_y = df[['Case ID', 'Activity_Index', 'Start Timestamp']]
