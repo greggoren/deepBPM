@@ -132,7 +132,6 @@ df['Activity_Time'] = df['Complete Timestamp'] - df['Start Timestamp']
 df['Activity_Time'] = df['Activity_Time'].astype('timedelta64[h]')
 df['Start Timestamp'] = df['Start Timestamp'].values.view('<i8')/10**9
 df['Previous_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(1).fillna(11.0).apply(np.array)
-df['trigram_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(2).fillna(11.0).apply(np.array)
 df['Previous'] = df.groupby('Case ID')['Activity'].shift(1).fillna("None").apply(np.array)
 df['XorLoop'] = 0
 df['Xor'] = 0
@@ -215,12 +214,11 @@ df_y = np.reshape(df_y, (-1, max_len))
 df = df.join(pd.get_dummies(df['Activity'], prefix='Activity'))\
     .join(pd.get_dummies(df['Activity_Time'], prefix='Activity_Time'))\
     .join(pd.get_dummies(df['Previous_Activity'], prefix='Previous_Activity'))\
-    .join(pd.get_dummies(df['trigram_Activity'], prefix='trigram_Activity'))\
     .join(pd.get_dummies(df['Number_of_previous_activities'], prefix='Number_of_previous_activities'))
 
 df['Padding_Activity'] = 0
 df = df.drop(['Activity', 'Complete Timestamp', 'Variant index', 'Activity_Index', \
-              'Activity_Time', 'Previous_Activity','Previous', 'trigram_Activity','Number_of_previous_activities'], axis = 1)
+              'Activity_Time', 'Previous_Activity','Previous','Number_of_previous_activities'], axis = 1)
 pad_size = len(df.columns)
 df = df.sort_values(['Case ID', 'Start Timestamp']).groupby('Case ID').apply(np.array)
 pad_seq = [0.0] * (pad_size - 2) + [1.0]
