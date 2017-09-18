@@ -147,18 +147,19 @@ df.loc[(df['Activity']=='Infusion') & (df['Previous']=='Pharmacy'), ['And']] = 1
 df.loc[(df['Activity']=='Pharmacy') & (df['Previous']=='Infusion'), ['And']] = 1
 df.loc[(df['Activity']=='Exam') & (df['Previous']=='Arrival'), ['And']] = 1
 df.loc[(df['Activity']=='Arrival') & (df['Previous']=='Exam'), ['And']] = 1
-df['Elapsed_Time'] = None
+#df['Elapsed_Time'] = None
 df['Number_of_previous_activities'] = None
-elapsed = {}
+#elapsed = {}
 numbers = {}
 for i,row in df.iterrows():
-    if not elapsed.get(row['Case ID'],False):
-        elapsed[row['Case ID']]=0
+    if not numbers.get(row['Case ID'],False):
+        #elapsed[row['Case ID']]=0
         numbers[row['Case ID']]=0
 
-    elapsed[row['Case ID']]+=row['Activity_Time']
-    df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
+    #elapsed[row['Case ID']]+=row['Activity_Time']
+    #df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
     df.set_value(i,'Number_of_previous_activities',numbers[row['Case ID']])
+    numbers[row['Case ID']]+=1
 Case_IDs = pd.DataFrame({'count': df.groupby(['Case ID']).size()}).reset_index()
 print(df)
 df_y = df[['Case ID', 'Activity_Index', 'Start Timestamp']]
