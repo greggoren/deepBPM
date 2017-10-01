@@ -244,7 +244,7 @@ trainX, testX, trainY, testY = train_test_split(df, df_y, test_size=0.24)
 trainY = to_categorical(trainY.ravel(), nb_classes=8)
 testY = to_categorical(testY.ravel(), nb_classes=8)
 print(testY[:100])
-learning_rates = [0.001]
+learning_rates = [0.0001]
 epochs=[100]
 for lr in learning_rates:
     for epoch in epochs:
@@ -279,7 +279,10 @@ for lr in learning_rates:
         predYnorm = np.zeros_like(predY)
         predYnorm[np.arange(len(predY)), predY.argmax(1)] = 1
         print(predYnorm[:100])
-
+        combine = tuple(zip([j for i in predY for j in i], [j for i in testY for j in i]))
+        combine = [(x, y) for x, y in combine if y != 0]
+        accuracy = sum(1 for x, y in combine if (x == y)) / float(len(combine))
+        print("accuracy on test is fucking:",accuracy)
 # new_net = tflearn.regression(save_net, optimizer='adam', learning_rate=0.001, loss='categorical_crossentropy',
 #                          shuffle_batches=False)
 #
