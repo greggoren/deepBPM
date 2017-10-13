@@ -4,8 +4,9 @@ from itertools import  chain,combinations
 from tflearn.data_utils import to_categorical, pad_sequences
 import tflearn
 from sklearn.model_selection import train_test_split
-
-def preprocess_data_set(df,features):
+from copy import deepcopy
+def preprocess_data_set(df_t,features):
+    df=deepcopy(df_t)
     max_len=6
     df['Activity_Time'] = 0.0
     df['Complete Timestamp'] = pd.to_datetime(df['Complete Timestamp'])
