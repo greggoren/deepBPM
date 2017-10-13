@@ -111,8 +111,6 @@ def create_y(df):
             # if len(temp) > max_len: break
         # if len(temp) > max_len : max_len= len(temp)
         if len(temp) > max_len or len(temp) < 2: continue
-        # if len(temp) < 2 : continue
-        # print(len(temp))
         df_y_new += [temp, ]
         # df_y_new += [temp[-1]]
 
@@ -123,7 +121,6 @@ def create_y(df):
 def create_experiment():
     combs=create_all_feature_combinations()
     df = pd.read_csv("Activity_April.csv")
-
     df = df.drop(['(case) variant',
                   '(case) variant-index', 'concept:name', 'lifecycle:transition', '(case) creator', 'Variant'], axis=1)
     to_numbers = dict(zip(df['Activity'].unique(), range(1, len(df['Activity'].unique()) + 1)))
@@ -132,8 +129,8 @@ def create_experiment():
     df_y=create_y(df)
     results = open("res.txt", 'w')
     for features in combs:
-        df = preprocess_data_set(df,features)
-        trainX, testX, trainY, testY = train_test_split(df, df_y, test_size=0.24)
+        df1 = preprocess_data_set(df,features)
+        trainX, testX, trainY, testY = train_test_split(df1, df_y, test_size=0.24)
         # print(testY[:100])
         trainY = to_categorical(trainY.ravel(), nb_classes=8)
         testY = to_categorical(testY.ravel(), nb_classes=8)
