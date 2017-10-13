@@ -142,6 +142,7 @@ def create_experiment():
         epochs = [100]
         for lr in learning_rates:
             for epoch in epochs:
+                tflearn.reset_default_graph()
                 net = tflearn.input_data(shape=[None] + list(trainX.shape)[1:])
                 # net = tflearn.input_data(shape=[None] + [18, 21])
                 net = tflearn.layers.normalization.batch_normalization(net)
