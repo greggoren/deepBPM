@@ -6,6 +6,7 @@ from tflearn.data_utils import to_categorical, pad_sequences
 import tflearn
 from sklearn.model_selection import train_test_split
 from copy import deepcopy
+import tensorflow as tf
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 max_len =6
 def preprocess_data_set(df_t,features):
@@ -142,7 +143,7 @@ def create_experiment():
         epochs = [100]
         for lr in learning_rates:
             for epoch in epochs:
-                tflearn.reset_default_graph()
+                tf.reset_default_graph()
                 net = tflearn.input_data(shape=[None] + list(trainX.shape)[1:])
                 # net = tflearn.input_data(shape=[None] + [18, 21])
                 net = tflearn.layers.normalization.batch_normalization(net)
