@@ -156,7 +156,7 @@ def create_experiment():
 
                 model = tflearn.DNN(net, tensorboard_verbose=3)
                 model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
-                          batch_size=6, n_epoch=epoch,snapshot_epoch=False, snapshot_step=1000000000)
+                          batch_size=6, n_epoch=epoch,snapshot_epoch=False, snapshot_step=1000000000,tensorboard_dir=None)
                 predY = model.predict(testX)
                 predYnorm = np.zeros_like(predY)
                 predYnorm[np.arange(len(predY)), predY.argmax(1)] = 1
