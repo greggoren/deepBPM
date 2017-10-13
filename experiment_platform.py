@@ -168,7 +168,7 @@ def create_experiment():
                 print("accuracy on test is fucking:", accuracy," lr= " ,lr,"features= ",features)
                 try:
                     feat_for_print = "_".join(features)
-                    results.write(feat_for_print+","+str(lr)+","+str(accuracy))
+                    results.write(feat_for_print+","+str(lr)+","+str(accuracy)+"\n")
                 except:
                     print("problem in file writing look at log")
 
