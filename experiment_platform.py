@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
+import os
 from itertools import  chain,combinations
 from tflearn.data_utils import to_categorical, pad_sequences
 import tflearn
 from sklearn.model_selection import train_test_split
 from copy import deepcopy
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 max_len =6
 def preprocess_data_set(df_t,features):
     df_tmp=deepcopy(df_t)
@@ -154,7 +156,7 @@ def create_experiment():
 
                 model = tflearn.DNN(net, tensorboard_verbose=3)
                 model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
-                          batch_size=6, n_epoch=epoch,snapshot_epoch=False)
+                          batch_size=6, n_epoch=epoch,snapshot_epoch=False, snapshot_step=1000000000)
                 predY = model.predict(testX)
                 predYnorm = np.zeros_like(predY)
                 predYnorm[np.arange(len(predY)), predY.argmax(1)] = 1
