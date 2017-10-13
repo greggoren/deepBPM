@@ -174,3 +174,6 @@ def create_experiment():
 
 
     results.close()
+
+if __name__=="__main__":
+    create_experiment()
