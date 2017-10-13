@@ -5,88 +5,90 @@ from tflearn.data_utils import to_categorical, pad_sequences
 import tflearn
 from sklearn.model_selection import train_test_split
 from copy import deepcopy
+max_len =6
 def preprocess_data_set(df_t,features):
-    df=deepcopy(df_t)
-    max_len=6
-    df['Activity_Time'] = 0.0
-    df['Complete Timestamp'] = pd.to_datetime(df['Complete Timestamp'])
-    df['Start Timestamp'] = pd.to_datetime(df['Start Timestamp'])
-    df['Activity_Time'] = df['Complete Timestamp'] - df['Start Timestamp']
-    df['Activity_Time'] = df['Activity_Time'].astype('timedelta64[h]')
-    df['Start Timestamp'] = df['Start Timestamp'].values.view('<i8') / 10 ** 9
-    df = df.join(pd.get_dummies(df['Activity'], prefix='Activity')) \
-        .join(pd.get_dummies(df['Activity_Time'], prefix='Activity_Time'))
+    df_tmp=deepcopy(df_t)
+    df_tmp['Activity_Time'] = 0.0
+    df_tmp['Complete Timestamp'] = pd.to_datetime(df_tmp['Complete Timestamp'])
+    df_tmp['Start Timestamp'] = pd.to_datetime(df_tmp['Start Timestamp'])
+    df_tmp['Activity_Time'] = df_tmp['Complete Timestamp'] - df_tmp['Start Timestamp']
+    df_tmp['Activity_Time'] = df_tmp['Activity_Time'].astype('timedelta64[h]')
+    df_tmp['Start Timestamp'] = df_tmp['Start Timestamp'].values.view('<i8') / 10 ** 9
+    df_tmp = df_tmp.join(pd.get_dummies(df_tmp['Activity'], prefix='Activity')) \
+        .join(pd.get_dummies(df_tmp['Activity_Time'], prefix='Activity_Time'))
     for feature in features:
         if feature=='Previous_Activity':
-            df['Previous_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(1).fillna(11.0).apply(np.array)
-            df = df.join(pd.get_dummies(df['Previous_Activity'], prefix='Previous_Activity'))
+            df_tmp['Previous_Activity'] = df_tmp.groupby('Case ID')['Activity_Index'].shift(1).fillna(11.0).apply(np.array)
+            df_tmp = df_tmp.join(pd.get_dummies(df_tmp['Previous_Activity'], prefix='Previous_Activity'))
         if feature=='Trigram_Activity':
-            df['Trigram_Activity'] = df.groupby('Case ID')['Activity_Index'].shift(2).fillna(11.0).apply(np.array)
-            df = df.join(pd.get_dummies(df['Trigram_Activity'], prefix='Trigram_Activity'))
+            df_tmp['Trigram_Activity'] = df_tmp.groupby('Case ID')['Activity_Index'].shift(2).fillna(11.0).apply(np.array)
+            df_tmp = df_tmp.join(pd.get_dummies(df_tmp['Trigram_Activity'], prefix='Trigram_Activity'))
         if feature =='Number_of_previous_activities':
-            df['Number_of_previous_activities'] = None
+            df_tmp['Number_of_previous_activities'] = None
             # elapsed = {}
             numbers = {}
-            for i, row in df.iterrows():
+            for i, row in df_tmp.iterrows():
                 if not numbers.get(row['Case ID'], False):
                     # elapsed[row['Case ID']]=0
                     numbers[row['Case ID']] = 0
 
                 # elapsed[row['Case ID']]+=row['Activity_Time']
                 # df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
-                df.set_value(i, 'Number_of_previous_activities', numbers[row['Case ID']])
+                df_tmp.set_value(i, 'Number_of_previous_activities', numbers[row['Case ID']])
                 numbers[row['Case ID']] += 1
-            df = df.join(pd.get_dummies(df['Number_of_previous_activities'], prefix='Number_of_previous_activities'))
+            df_tmp = df_tmp.join(pd.get_dummies(df_tmp['Number_of_previous_activities'], prefix='Number_of_previous_activities'))
         if feature=='Elapsed_Time':
-            df['Elapsed_Time'] = None
+            df_tmp['Elapsed_Time'] = None
             elapsed = {}
-            for i, row in df.iterrows():
+            for i, row in df_tmp.iterrows():
                 if not numbers.get(row['Case ID'], False):
                     elapsed[row['Case ID']]=0
 
                 elapsed[row['Case ID']]+=row['Activity_Time']
-                df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
-            df = df.join(pd.get_dummies(df['Elapsed_Time'], prefix='Elapsed_Time'))
+                df_tmp.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
+            df_tmp = df_tmp.join(pd.get_dummies(df_tmp['Elapsed_Time'], prefix='Elapsed_Time'))
         if feature=='Tree':
-            df['Previous'] = df.groupby('Case ID')['Activity'].shift(1).fillna("None").apply(np.array)
-            df['XorLoop'] = 0
-            df['Xor'] = 0
-            df['And'] = 0
-            df['Seq'] = 0
-            df.loc[(df['Activity'] == 'Exam') & (df['Previous'] == 'Vitals'), ['Seq']] = 1
-            df.loc[df['Activity'] == 'Pharmacy', ['XorLoop']] = 1
-            df.loc[df['Activity'] == 'Exam', ['XorLoop']] = 1
-            df.loc[df['Activity'] == 'BloodDraw', ['XorLoop']] = 1
-            df.loc[(df['Activity'] == 'BloodDraw') & (df['Previous'] == 'Arrival'), ['Seq']] = 1
-            df.loc[(df['Activity'] == 'Infusion') & (df['Previous'] == 'Pharmacy'), ['And']] = 1
-            df.loc[(df['Activity'] == 'Pharmacy') & (df['Previous'] == 'Infusion'), ['And']] = 1
-            df.loc[(df['Activity'] == 'Exam') & (df['Previous'] == 'Arrival'), ['And']] = 1
-            df.loc[(df['Activity'] == 'Arrival') & (df['Previous'] == 'Exam'), ['And']] = 1
+            df_tmp['Previous'] = df_tmp.groupby('Case ID')['Activity'].shift(1).fillna("None").apply(np.array)
+            df_tmp['XorLoop'] = 0
+            df_tmp['Xor'] = 0
+            df_tmp['And'] = 0
+            df_tmp['Seq'] = 0
+            df_tmp.loc[(df_tmp['Activity'] == 'Exam') & (df_tmp['Previous'] == 'Vitals'), ['Seq']] = 1
+            df_tmp.loc[df_tmp['Activity'] == 'Pharmacy', ['XorLoop']] = 1
+            df_tmp.loc[df_tmp['Activity'] == 'Exam', ['XorLoop']] = 1
+            df_tmp.loc[df_tmp['Activity'] == 'BloodDraw', ['XorLoop']] = 1
+            df_tmp.loc[(df_tmp['Activity'] == 'BloodDraw') & (df_tmp['Previous'] == 'Arrival'), ['Seq']] = 1
+            df_tmp.loc[(df_tmp['Activity'] == 'Infusion') & (df_tmp['Previous'] == 'Pharmacy'), ['And']] = 1
+            df_tmp.loc[(df_tmp['Activity'] == 'Pharmacy') & (df_tmp['Previous'] == 'Infusion'), ['And']] = 1
+            df_tmp.loc[(df_tmp['Activity'] == 'Exam') & (df_tmp['Previous'] == 'Arrival'), ['And']] = 1
+            df_tmp.loc[(df_tmp['Activity'] == 'Arrival') & (df_tmp['Previous'] == 'Exam'), ['And']] = 1
     feature_without_tree = [x for x in features if x!='Tree']
+    if "Tree"in features:
+        feature_without_tree+=["Previous",]
     drop_features = ['Activity', 'Complete Timestamp', 'Variant index', 'Activity_Index','Activity_Time']+feature_without_tree
-    df = df.drop(drop_features,axis=1)
-    df['Padding_Activity'] = 0
-    pad_size = len(df.columns)
-    df = df.sort_values(['Case ID', 'Start Timestamp']).groupby('Case ID').apply(np.array)
+    df_tmp = df_tmp.drop(drop_features,axis=1)
+    df_tmp['Padding_Activity'] = 0
+    pad_size = len(df_tmp.columns)
+    df_tmp = df_tmp.sort_values(['Case ID', 'Start Timestamp']).groupby('Case ID').apply(np.array)
     pad_seq = [0.0] * (pad_size - 2) + [1.0]
     df_new = []
-    for row in df:
+    for row in df_tmp:
         temp = []
         for col in row:
             temp += [list(col[1:]), ]
         if len(temp) > max_len or len(temp) < 2: continue
-        # if len(temp) < 2:continue
         for i in range(len(temp), max_len):
             temp += [pad_seq, ]
 
 
-            df_new += [temp, ]
-    df = np.zeros((len(df_new), len(df_new[0]), len(df_new[0][0])), dtype=np.float32)
+        df_new += [temp, ]
+    print(len(df_new))
+    df_tmp = np.zeros((len(df_new), len(df_new[0]), len(df_new[0][0])), dtype=np.float32)
     for i in range(len(df_new)):
         for j in range(len(df_new[0])):
             for k in range(len(df_new[0][0])):
-                df[i][j][k] = df_new[i][j][k]
-    return df
+                df_tmp[i][j][k] = df_new[i][j][k]
+    return df_tmp
 
 def create_all_feature_combinations():
     features = ['Tree','Elapsed_Time','Number_of_previous_activities','Previous_Activity','Trigram_Activity']
@@ -95,7 +97,7 @@ def create_all_feature_combinations():
 
 def powerset(iterable):
     xs = list(iterable)
-    return chain.from_iterable(combinations(xs,n) for n in range(len(xs)+1))
+    return chain.from_iterable(combinations(xs,n) for n in range(1,len(xs)+1))
 
 def create_y(df):
     df_y = df[['Case ID', 'Activity_Index', 'Start Timestamp']]
@@ -103,17 +105,14 @@ def create_y(df):
     df_y = df_y.sort_values(['Case ID', 'Start Timestamp']).drop(['Start Timestamp'], axis=1).groupby('Case ID').apply(
         np.array)
     # max_len = 0
-    max_len = 6
     df_y_new = []
     for row in df_y:
         temp = []
         for col in row:
             temp += list(col[1:])
             # if len(temp) > max_len: break
-        # if len(temp) > max_len : max_len= len(temp)
         if len(temp) > max_len or len(temp) < 2: continue
         df_y_new += [temp, ]
-        # df_y_new += [temp[-1]]
 
     df_y = pad_sequences(df_y_new, maxlen=max_len)
     df_y = np.reshape(df_y, (-1, max_len))
@@ -131,6 +130,7 @@ def create_experiment():
     results = open("res.txt", 'w')
     for features in combs:
         df1 = preprocess_data_set(df,features)
+
         trainX, testX, trainY, testY = train_test_split(df1, df_y, test_size=0.24)
         # print(testY[:100])
         trainY = to_categorical(trainY.ravel(), nb_classes=8)
