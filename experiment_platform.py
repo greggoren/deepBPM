@@ -28,15 +28,10 @@ def preprocess_data_set(df_t,features):
             df_tmp = df_tmp.join(pd.get_dummies(df_tmp['Trigram_Activity'], prefix='Trigram_Activity'))
         if feature =='Number_of_previous_activities':
             df_tmp['Number_of_previous_activities'] = None
-            # elapsed = {}
             numbers = {}
             for i, row in df_tmp.iterrows():
                 if not numbers.get(row['Case ID'], False):
-                    # elapsed[row['Case ID']]=0
                     numbers[row['Case ID']] = 0
-
-                # elapsed[row['Case ID']]+=row['Activity_Time']
-                # df.set_value(i,'Elapsed_Time',elapsed[row['Case ID']])
                 df_tmp.set_value(i, 'Number_of_previous_activities', numbers[row['Case ID']])
                 numbers[row['Case ID']] += 1
             df_tmp = df_tmp.join(pd.get_dummies(df_tmp['Number_of_previous_activities'], prefix='Number_of_previous_activities'))
@@ -44,7 +39,7 @@ def preprocess_data_set(df_t,features):
             df_tmp['Elapsed_Time'] = None
             elapsed = {}
             for i, row in df_tmp.iterrows():
-                if not numbers.get(row['Case ID'], False):
+                if not elapsed.get(row['Case ID'], False):
                     elapsed[row['Case ID']]=0
 
                 elapsed[row['Case ID']]+=row['Activity_Time']
